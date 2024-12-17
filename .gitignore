@@ -1,0 +1,55 @@
+.env
+*.pyc
+venv/
+
+# Ignore Conda environment folders
+env/
+conda_env/
+# Ignore global Conda cache
+.conda/
+
+# Ignore static files
+public/static/*
+!public/static/important-file.jpg  # (Optional) Keep specific files if needed
+
+# Ignore image files
+*.jpg
+*.jpeg
+*.png
+*.gif
+
+# Ignore CSS and JS files
+*.css
+*.js
+
+# Node modules
+node_modules/
+
+# Build output
+build/
+dist/
+
+# Static files
+public/static/*
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.svg
+*.css
+*.js
+
+# Ignore Conda environment
+env/
+conda_env/
+.conda/
+
+# VS Code settings
+.vscode/
+
+# Logs
+*.log
+
+# OS generated files
+.DS_Store
+Thumbs.db
