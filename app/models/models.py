@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, Enum, JSON, TIMESTAMP, ForeignKey, func
+from sqlalchemy import Column, Integer, String, Float, Enum, JSON, TIMESTAMP, ForeignKey, Text, func
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -30,6 +30,7 @@ class DetectionResults(Base):
 
     media_upload = relationship("MediaUpload", back_populates="detection_results")
     detected_objects = relationship("DetectedObjects", back_populates="detection_results", cascade="all, delete")
+    Inventory_Compersions = relationship("Inventory_Compersion", back_populates="detection_results")
 
 
 class DetectedObjects(Base):
@@ -44,3 +45,37 @@ class DetectedObjects(Base):
     xmax = Column(Float, nullable=False)
 
     detection_results = relationship("DetectionResults", back_populates="detected_objects")
+
+class Inventory(Base):
+    __tablename__ = "inventory_tb2"
+
+    inventory_id  = Column(Integer, primary_key=True, autoincrement=True)
+    task_id =Column(Integer, nullable=False)
+    task_type = Column(String(255), nullable=False)
+    unit_id = Column(Integer, nullable=False)
+    property_id = Column(Integer, nullable=False)
+    existing_item=Column(JSON, nullable=False)
+    existing_count=Column(Integer, nullable=False)
+    summary = Column(JSON, nullable=True)
+    general_description=Column(JSON, nullable=True)
+    created_at = Column(TIMESTAMP, default=func.now())
+
+class Inventory_Compersion(Base):
+    __tablename__ = "Inventory_Compersion"
+
+    inventory_id  = Column(Integer, primary_key=True, autoincrement=True)
+    result_id = Column(Integer, ForeignKey("detection_results.result_id", ondelete="CASCADE"),nullable=False)
+    task_id =Column(Integer, nullable=False)
+    task_type = Column(String(255), nullable=False)
+    unit_id = Column(Integer, nullable=False)
+    property_id = Column(Integer, nullable=False)
+    existing_item=Column(JSON, nullable=False)
+    existing_count=Column(Integer, nullable=False)
+    detected_item=Column(JSON, nullable=False)
+    detected_count=Column(Integer, nullable=False)
+    created_at = Column(TIMESTAMP, default=func.now())
+
+    detection_results = relationship("DetectionResults", back_populates="Inventory_Compersions")
+    
+
+   

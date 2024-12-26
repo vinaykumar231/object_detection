@@ -2,8 +2,11 @@ from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse
 from typing import List
 import os
+
+from pydantic import BaseModel
 from app.database import get_db
-from app.services.analysis_services import process_image, process_video
+from app.models.models import Inventory
+from app.services.analysis_services import process_image, process_image_data_add, process_video
 # from app.services.database import rollback_transaction, commit_transaction
 import uuid
 from sqlalchemy.orm import Session
@@ -58,3 +61,4 @@ async def analyze_video(task_id: int, media_file: UploadFile = File(...), db: Se
     except Exception as e:
         db.rollback()
         return JSONResponse(content={"error": str(e)}, status_code=500)
+

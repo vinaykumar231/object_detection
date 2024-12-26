@@ -3,11 +3,23 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from app.database import Base, engine
 from app.models import MediaUpload, DetectionResults, DetectedObjects 
-from app.routes import detection_router  
+from app.routes import detection_router, add_elementry_router 
 Base.metadata.create_all(bind=engine)
 
 
 app = FastAPI()
+
+def custom_openapi():
+    if app.openapi_schema:
+        return app.openapi_schema
+    openapi_schema = FastAPI.openapi(app)  
+    openapi_schema["info"]["title"] = "Object Detection"
+    openapi_schema["info"]["version"] = "1.1.0"
+    openapi_schema["info"]["description"] = "This API serves as the backend for Object Detection."
+    app.openapi_schema = openapi_schema
+    return app.openapi_schema
+
+app.openapi = custom_openapi
 
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +31,7 @@ app.add_middleware(
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 app.include_router(detection_router, prefix="/detection")
+app.include_router(add_elementry_router,  prefix="/api", tags=["Add Elementary Data"])
 
 if __name__ == "__main__":
     import uvicorn
