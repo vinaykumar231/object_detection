@@ -36,6 +36,8 @@ GENERATION_CONFIG = {
 UPLOAD_DIR_BOUNDING_BOX_IMG = "static/uploads/bounding_box_images/"
 os.makedirs(UPLOAD_DIR_BOUNDING_BOX_IMG, exist_ok=True)
 
+BASE_URL_PATH = "http://192.168.29.82:8000"
+
 
 ################################################### IMAGE PROCESSING ###################################################
 
@@ -152,6 +154,7 @@ async def process_image(file_path, media_type, task_id, db: Session):
     return {
         "detected_count": len(response_json["objects"]),
         "detected_items": detected_items,
+        "image_path": f"{BASE_URL_PATH}/{save_path_bounding_box_img}" if save_path_bounding_box_img else None,
         "response_json": response_json,  # Return the full response for debugging purposes
     }
 
