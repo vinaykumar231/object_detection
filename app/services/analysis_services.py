@@ -159,7 +159,7 @@ async def process_image(file_path, media_type, task_id, db: Session):
     }
 
 ######################################################### process_video ############################################
-
+UPLOAD_DIR_VID = "static/uploads/videos"
 async def process_video(file_path, media_type, task_id,  db:Session=Depends(get_db)):
 
     try:
@@ -189,6 +189,11 @@ async def process_video(file_path, media_type, task_id,  db:Session=Depends(get_
 
     if video_upload.state.name == "FAILED":
         raise Exception("Video processing failed.")
+    
+     # Video file name and path
+    video_file_name = video_upload.name
+    saved_video_path = os.path.join(UPLOAD_DIR_VID, video_file_name)
+    print(saved_video_path)
 
     model = GenerativeModel(
         model_name="models/gemini-1.5-pro", generation_config=GENERATION_CONFIG
@@ -210,7 +215,8 @@ async def process_video(file_path, media_type, task_id,  db:Session=Depends(get_
 
     return {
         "detected_count": result_db.detected_count,
-        "response_json": response_json,  
+        "response_json": response_json, 
+        "videos_path": f"{BASE_URL_PATH}/{file_path.replace("\\", "/")}", 
          
     }
 
@@ -306,6 +312,7 @@ async def process_image_data_add(file_path, media_type, task_id, db: Session):
 
     # Return the detected count, summary, and full response for debugging
     return {
+        "inventory_id":result_db.inventory_id,
         "detected_count": len(parsed_content.get("objects", [])),
         "summary": summary,
         "response_json": parsed_content,
